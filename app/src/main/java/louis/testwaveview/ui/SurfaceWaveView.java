@@ -30,8 +30,8 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
     private boolean isAttributeChange = false;
 
     // 波纹颜色
-    private static final int FST_WAVE_PAINT_COLOR = 0x282AE2E2;//0x880000aa;
-    private static final int SEC_WAVE_PAINT_COLOR = 0x3C2AE2E2;//0x880000aa;
+    private int fstWavePaintColor = 0x282AE2E2;
+    private int secWavePaintColor = 0x3C2AE2E2;
     // y = Asin(wx+b)+h
     private float stretchFactorA = 20 * 2; //幅度
     private static final int OFFSET_Y = 0;
@@ -170,6 +170,30 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         mWaterDepth = UiUtils.dipToPx(this.getContext(), waterDepth);
     }
 
+    public int getFstWavePaintColor() {
+        return this.fstWavePaintColor;
+    }
+
+    public void setFstWavePaintColor(int fstWavePaintColor) {
+        if (this.fstWavePaintColor == fstWavePaintColor) {
+            return;
+        }
+
+        this.fstWavePaintColor = fstWavePaintColor;
+    }
+
+    public int getSecWavePaintColor() {
+        return this.secWavePaintColor;
+    }
+
+    public void setSecWavePaintColor() {
+        if (this.secWavePaintColor == secWavePaintColor) {
+            return;
+        }
+
+        this.secWavePaintColor = secWavePaintColor;
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -285,12 +309,12 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         // 设置画笔颜色
-        mWavePaint.setColor(FST_WAVE_PAINT_COLOR);
+        mWavePaint.setColor(fstWavePaintColor);
 
         canvas.drawPath(mPathFst, mWavePaint);
 
         // 设置画笔颜色
-        mWavePaint.setColor(SEC_WAVE_PAINT_COLOR);
+        mWavePaint.setColor(secWavePaintColor);
 
         canvas.drawPath(mPathSec, mWavePaint);
 
@@ -318,5 +342,9 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         System.arraycopy(mYPositions, mXTwoOffset, mResetTwoYPositions, 0,
                 yTwoInterval);
         System.arraycopy(mYPositions, 0, mResetTwoYPositions, yTwoInterval, mXTwoOffset);
+    }
+
+    private void loadAttrs(AttributeSet attrs, int defStyle) {
+
     }
 }
