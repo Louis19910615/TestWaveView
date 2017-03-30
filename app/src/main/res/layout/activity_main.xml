@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/wave_demo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="标准正余弦波纹"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/xfermode_demo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wave_demo"
+        android:gravity="center"
+        android:text="图像混合模式之遮罩实现圆形波纹"
+        android:textSize="20dp" />
+
+</RelativeLayout>
