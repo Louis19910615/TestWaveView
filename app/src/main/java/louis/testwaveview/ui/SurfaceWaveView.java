@@ -21,6 +21,7 @@ import louis.testwaveview.utils.UiUtils;
  * Created by louis on 2017/3/29.
  */
 
+//TODO 支持View本身属性
 public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder mHolder;
@@ -33,12 +34,18 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
     private static final int SEC_WAVE_PAINT_COLOR = 0x3C2AE2E2;//0x880000aa;
     // y = Asin(wx+b)+h
     private float stretchFactorA = 20 * 2; //幅度
-//    private float STRETCH_FACTOR_A = 20*2; //幅度
     private static final int OFFSET_Y = 0;
     // 第一条水波移动速度
-    private static final int TRANSLATE_X_SPEED_ONE = 7*2;
+    private int translateXSpeedOne = 7 * 2;
     // 第二条水波移动速度
-    private static final int TRANSLATE_X_SPEED_TWO = 5*2;
+    private int translateXSpeedTwo = 5 * 2;
+
+    // 水波深度 dp
+    private int waterDepth = 100;
+
+    // 水波深度 px
+    private int mWaterDepth;
+
     private float mCycleFactorW;
 
     private int mTotalWidth, mTotalHeight;
@@ -80,11 +87,14 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         mHolder = this.getHolder();
         mHolder.addCallback(this);
         mHolder.setFormat(PixelFormat.TRANSLUCENT);//支持透明度
+        //显示背景图
         this.setZOrderOnTop(true);
 
         // 将dp转化为px，用于控制不同分辨率上移动速度基本一致
-        mXOffsetSpeedOne = UiUtils.dipToPx(context, TRANSLATE_X_SPEED_ONE);
-        mXOffsetSpeedTwo = UiUtils.dipToPx(context, TRANSLATE_X_SPEED_TWO);
+        mXOffsetSpeedOne = UiUtils.dipToPx(context, translateXSpeedOne);
+        mXOffsetSpeedTwo = UiUtils.dipToPx(context, translateXSpeedTwo);
+
+        mWaterDepth = UiUtils.dipToPx(context, waterDepth);
 
         // 初始绘制波纹的画笔
         mWavePaint = new Paint();
@@ -119,6 +129,45 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         }
         this.stretchFactorA = stretchFactorA;
         this.isAttributeChange = true;
+    }
+
+    public int getTranslateXSpeedOne () {
+        return this.translateXSpeedOne;
+    }
+
+    public void setTranslateXSpeedOne (int translateXSpeedOne) {
+        if (this.translateXSpeedOne == translateXSpeedOne) {
+            return;
+        }
+        this.translateXSpeedOne = translateXSpeedOne;
+        // 将dp转化为px，用于控制不同分辨率上移动速度基本一致
+        mXOffsetSpeedOne = UiUtils.dipToPx(this.getContext(), translateXSpeedOne);
+    }
+
+    public int getTranslateXSpeedTwo () {
+        return this.translateXSpeedTwo;
+    }
+
+    public void setTranslateXSpeedTwo (int translateXSpeedTwo) {
+        if (this.translateXSpeedTwo == translateXSpeedTwo) {
+            return;
+        }
+        this.translateXSpeedTwo = translateXSpeedTwo;
+        // 将dp转化为px，用于控制不同分辨率上移动速度基本一致
+        mXOffsetSpeedTwo = UiUtils.dipToPx(this.getContext(), translateXSpeedTwo);
+    }
+
+    public int getWaterDepth() {
+        return this.waterDepth;
+    }
+
+    public void setWaterDepth(int waterDepth) {
+        if (this.waterDepth == waterDepth) {
+            return;
+        }
+
+        this.waterDepth = waterDepth;
+        mWaterDepth = UiUtils.dipToPx(this.getContext(), waterDepth);
     }
 
 
@@ -171,9 +220,9 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         for (int i = 0; i < mTotalWidth; i++) {
             // 减400只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
             // 绘制第一条水波纹
-            mPathFst.lineTo(i, mTotalHeight - mResetOneYPositions[i] - 400);
+            mPathFst.lineTo(i, mTotalHeight - mResetOneYPositions[i] - mWaterDepth);
             // 绘制第二条水波纹
-            mPathSec.lineTo(i, mTotalHeight - mResetTwoYPositions[i] - 400);
+            mPathSec.lineTo(i, mTotalHeight - mResetTwoYPositions[i] - mWaterDepth);
 
         }
         mPathFst.lineTo(mTotalWidth, mTotalHeight);
@@ -234,8 +283,6 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         resetPositonY();
         //画新的东西之前需要先清除画布内容
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-//        canvas.save();//保存画布状态
-
 
         // 设置画笔颜色
         mWavePaint.setColor(FST_WAVE_PAINT_COLOR);
@@ -246,8 +293,6 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         mWavePaint.setColor(SEC_WAVE_PAINT_COLOR);
 
         canvas.drawPath(mPathSec, mWavePaint);
-
-//        canvas.restore();//恢复画布状态
 
         // 改变两条波纹的移动点
         mXOneOffset += mXOffsetSpeedOne;

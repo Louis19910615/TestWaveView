@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import louis.testwaveview.ui.SurfaceWaveView;
 import louis.testwaveview.ui.managers.WaveTransitionManager;
+import louis.testwaveview.utils.UiUtils;
 
 public class WaveDemoActivity extends Activity {
 
