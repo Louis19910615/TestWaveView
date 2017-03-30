@@ -26,12 +26,14 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
     private SurfaceHolder mHolder;
     private RenderThread renderThread;//绘图线程
 
+    private boolean isAttributeChange = false;
 
     // 波纹颜色
     private static final int FST_WAVE_PAINT_COLOR = 0x282AE2E2;//0x880000aa;
     private static final int SEC_WAVE_PAINT_COLOR = 0x3C2AE2E2;//0x880000aa;
     // y = Asin(wx+b)+h
-    private static final float STRETCH_FACTOR_A = 20*2;
+    private float stretchFactorA = 20 * 2; //幅度
+//    private float STRETCH_FACTOR_A = 20*2; //幅度
     private static final int OFFSET_Y = 0;
     // 第一条水波移动速度
     private static final int TRANSLATE_X_SPEED_ONE = 7*2;
@@ -58,34 +60,23 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
     public SurfaceWaveView(Context context) {
         super(context);
         Log.d("SurfaceWaveView", "SurfaceWaveView1");
-        mHolder = this.getHolder();
-        mHolder.addCallback(this);
-        mHolder.setFormat(PixelFormat.TRANSLUCENT);//支持透明度
-        this.setZOrderOnTop(true);
-
-        // 将dp转化为px，用于控制不同分辨率上移动速度基本一致
-        mXOffsetSpeedOne = UiUtils.dipToPx(context, TRANSLATE_X_SPEED_ONE);
-        mXOffsetSpeedTwo = UiUtils.dipToPx(context, TRANSLATE_X_SPEED_TWO);
-
-        // 初始绘制波纹的画笔
-        mWavePaint = new Paint();
-        // 去除画笔锯齿
-        mWavePaint.setAntiAlias(true);
-        // 设置风格为实线
-        mWavePaint.setStyle(Paint.Style.FILL);
-
-        mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-
-        mPathFst = new Path();
-        mPathSec = new Path();
-
-        renderThread = new RenderThread();
+        init(context);
     }
 
     public SurfaceWaveView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
         Log.d("SurfaceWaveView", "SurfaceWaveView2");
+        init(context);
+    }
+
+    public SurfaceWaveView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        Log.d("SurfaceWaveView", "SurfaceWaveView3");
+        init(context);
+    }
+
+    private void init(Context context) {
         mHolder = this.getHolder();
         mHolder.addCallback(this);
         mHolder.setFormat(PixelFormat.TRANSLUCENT);//支持透明度
@@ -110,9 +101,24 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         renderThread = new RenderThread();
     }
 
-    public SurfaceWaveView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        Log.d("SurfaceWaveView", "SurfaceWaveView3");
+    public void setIsAttributeChange(boolean isAttributeChange) {
+        this.isAttributeChange = isAttributeChange;
+    }
+
+    public boolean getIsAttributeChange() {
+        return this.isAttributeChange;
+    }
+
+    public float getStretchFactorA () {
+        return this.stretchFactorA;
+    }
+
+    public void setStretchFactorA (float stretchFactorA) {
+        if (this.stretchFactorA == stretchFactorA) {
+            return;
+        }
+        this.stretchFactorA = stretchFactorA;
+        this.isAttributeChange = true;
     }
 
 
@@ -141,12 +147,7 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         // 将周期定为view总宽度
         mCycleFactorW = (float) (2 * Math.PI / mTotalWidth);
 
-        // 根据view总宽度得出所有对应的y值
-        for (int i = 0; i < mTotalWidth; i++) {
-            mYPositions[i] = (float) (STRETCH_FACTOR_A * Math.sin(mCycleFactorW * i) + OFFSET_Y);
-        }
-
-
+        computeYPositions();
     }
 
     @Override
@@ -155,6 +156,31 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         isDrawing = false;
     }
 
+    private void computeYPositions() {
+        // 根据view总宽度得出所有对应的y值
+        for (int i = 0; i < mTotalWidth; i++) {
+            mYPositions[i] = (float) (stretchFactorA * Math.sin(mCycleFactorW * i) + OFFSET_Y);
+        }
+    }
+
+    private void computePath() {
+        mPathFst.reset();
+        mPathSec.reset();
+        mPathFst.moveTo(0, mTotalHeight);
+        mPathSec.moveTo(0, mTotalHeight);
+        for (int i = 0; i < mTotalWidth; i++) {
+            // 减400只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
+            // 绘制第一条水波纹
+            mPathFst.lineTo(i, mTotalHeight - mResetOneYPositions[i] - 400);
+            // 绘制第二条水波纹
+            mPathSec.lineTo(i, mTotalHeight - mResetTwoYPositions[i] - 400);
+
+        }
+        mPathFst.lineTo(mTotalWidth, mTotalHeight);
+        mPathSec.lineTo(mTotalWidth, mTotalHeight);
+        mPathFst.close();
+        mPathSec.close();
+    }
 
     /**
      * 绘制界面的线程
@@ -168,6 +194,12 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
             // 不停绘制界面，这里是异步绘制，不采用外部通知开启绘制的方式，水波根据数据更新才会开始增长
             while (isDrawing) {
                 Log.d("SurfaceWaveView", "run");
+
+                if (isAttributeChange) {
+                    computeYPositions();
+                    isAttributeChange = false;
+                }
+                computePath();
                 drawUI();
 
                 SystemClock.sleep(20);//控制刷新速率，减少cpu占用
@@ -203,30 +235,7 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         //画新的东西之前需要先清除画布内容
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 //        canvas.save();//保存画布状态
-        mPathFst.reset();
-        mPathSec.reset();
-        mPathFst.moveTo(0, mTotalHeight);
-        mPathSec.moveTo(0, mTotalHeight);
-        for (int i = 0; i < mTotalWidth; i++) {
-            // 减400只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
-            // 绘制第一条水波纹
-            mPathFst.lineTo(i, mTotalHeight - mResetOneYPositions[i] - 400);
-//            canvas.drawPoint(i, mTotalHeight - mResetOneYPositions[i] - 400, mWavePaint);
-//            canvas.drawLine(i, mTotalHeight - mResetOneYPositions[i] - 400, i,
-//                    mTotalHeight,
-//                    mWavePaint);
-            // 绘制第二条水波纹
-            mPathSec.lineTo(i, mTotalHeight - mResetTwoYPositions[i] - 400);
-//            canvas.drawPoint(i, mTotalHeight - mResetTwoYPositions[i] - 400, mWavePaint);
-//            canvas.drawLine(i, mTotalHeight - mResetTwoYPositions[i] - 400, i,
-//                    mTotalHeight,
-//                    mWavePaint);
 
-        }
-        mPathFst.lineTo(mTotalWidth, mTotalHeight);
-        mPathSec.lineTo(mTotalWidth, mTotalHeight);
-        mPathFst.close();
-        mPathSec.close();
 
         // 设置画笔颜色
         mWavePaint.setColor(FST_WAVE_PAINT_COLOR);

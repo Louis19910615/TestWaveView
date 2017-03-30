@@ -1,3 +1,15 @@
 .DS_Store
 build
 TestWaveView.iml
+.gradle/2.14.1/taskArtifacts/cache.properties.lock
+.gradle/2.14.1/taskArtifacts/fileHashes.bin
+fileSnapshots.bin
+.gradle/2.14.1/taskArtifacts/fileSnapshotsToTreeSnapshotsIndex.bin
+.gradle/2.14.1/taskArtifacts/fileSnapshots.bin
+.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin
+.gradle/2.14.1/taskArtifacts/taskArtifacts.bin
+.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock
+.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml

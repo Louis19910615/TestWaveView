@@ -5,7 +5,24 @@
     android:orientation="vertical"
     android:background="@mipmap/bg_common_2">
 
+    <Button
+        android:id="@+id/ctrl_wave_btn1"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="ctrl_btn1"/>
+    <Button
+        android:id="@+id/ctrl_wave_btn2"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="ctrl_btn2"/>
+    <Button
+        android:id="@+id/ctrl_wave_btn3"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="ctrl_btn3"/>
+
     <louis.testwaveview.ui.SurfaceWaveView
+        android:id="@+id/surface_wave_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
