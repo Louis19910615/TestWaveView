@@ -11,7 +11,7 @@ import louis.testwaveview.ui.SurfaceWaveView;
  * Created by louis on 2017/3/30.
  */
 
-// TODO 验证对象的 == 和 equal的区别
+
 public class WaveTransitionManager {
 
     private SurfaceWaveView mSurfaceWaveView;
@@ -88,32 +88,32 @@ public class WaveTransitionManager {
 
     public void offer0() {
         transitionA((float) 0);
-        transitionSpeedOne(0);
-        transitionSpeedTwo(0);
-        transitionWaterDepth(60);
+        transitionSpeedOne(7);
+        transitionSpeedTwo(5);
+//        transitionWaterDepth(60);
     }
 
     public void offer1() {
         transitionA((float) 20);
         transitionSpeedOne(7);
         transitionSpeedTwo(5);
-        transitionWaterDepth(80);
+//        transitionWaterDepth(80);
     }
 
     public void offer2() {
         transitionA((float) (20 * 2));
         transitionSpeedOne(7 * 2);
         transitionSpeedTwo(5 * 2);
-        transitionWaterDepth(100);
+//        transitionWaterDepth(100);
     }
 
     public void offer3() {
         transitionA((float) (20 * 3));
         transitionSpeedOne(15);
         transitionSpeedTwo(12);
-        transitionWaterDepth(120);
+//        transitionWaterDepth(120);
     }
-    // TODO 优化渐变过程，通过差距和点数成正比优化，及等差一样
+
     private void transitionA(Float targetA) {
         if (mTargetA.equals(targetA)) {
             Log.d("WaveTransitionManager", "mTargetA equal.");
@@ -122,8 +122,8 @@ public class WaveTransitionManager {
         mTargetA = targetA;
         mTransitionAQueue.clear();
         double tempA = mCurrentA;
-        double err = (tempA - targetA) / 80.0;
-        for (int i = 0; i < 80; i++) {
+        double err = (tempA - targetA) / 20.0;
+        for (int i = 0; i < 20; i++) {
             tempA -= err;
             mTransitionAQueue.offer((float) tempA);
         }
@@ -138,8 +138,8 @@ public class WaveTransitionManager {
         mTargetSpeedOne = targetSpeedOne;
         mTransitionSpeedOneQueue.clear();
         double tempSpeedOne = mCurrentSpeedOne;
-        double err = (tempSpeedOne - targetSpeedOne) / 80.0;
-        for (int i = 0; i < 80; i++) {
+        double err = (tempSpeedOne - targetSpeedOne) / 20.0;
+        for (int i = 0; i < 20; i++) {
             tempSpeedOne -= err;
             mTransitionSpeedOneQueue.offer((int) Math.floor(tempSpeedOne));
         }
@@ -154,14 +154,15 @@ public class WaveTransitionManager {
         mTargetSpeedTwo = targetSpeedTwo;
         mTransitionSpeedTwoQueue.clear();
         double tempSpeedTwo = mCurrentSpeedTwo;
-        double err = (tempSpeedTwo - targetSpeedTwo) / 80.0;
-        for (int i = 0; i < 80; i++) {
+        double err = (tempSpeedTwo - targetSpeedTwo) / 20.0;
+        for (int i = 0; i < 20; i++) {
             tempSpeedTwo -= err;
             mTransitionSpeedTwoQueue.offer((int) Math.floor(tempSpeedTwo));
         }
         mTransitionSpeedTwoQueue.offer(targetSpeedTwo);
     }
 
+    // TODO 优化渐变过程，从停止到启动或从启动到停止
     private void transitionWaterDepth (Integer targetWaterDepth) {
         if (mTargetWaterDepth.equals(targetWaterDepth)) {
             Log.d("WaveTransitionManager", "mTargetWaterDepth equal.");
@@ -171,8 +172,8 @@ public class WaveTransitionManager {
         mTargetWaterDepth = targetWaterDepth;
         mTransitionWaterDepth.clear();
         double tempWaterDepth = mCurrentWaterDepth;
-        double err = (tempWaterDepth - targetWaterDepth) / 80;
-        for (int i = 0; i < 80; i ++) {
+        double err = (tempWaterDepth - targetWaterDepth) / 20;
+        for (int i = 0; i < 20; i ++) {
             tempWaterDepth -= err;
             mTransitionWaterDepth.offer((int) Math.floor(tempWaterDepth));
         }

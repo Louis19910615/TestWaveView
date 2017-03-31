@@ -60,13 +60,13 @@ public class WaveDemoActivity extends Activity {
         });
 
         mWaveTransitionManager = new WaveTransitionManager(mSurfaceWaveView);
-//        mWaveTransitionManager.startThread();
+        mWaveTransitionManager.startThread();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d("WaveDemoActivity", "onDestroy");
-//        mWaveTransitionManager.stopThread();
+        mWaveTransitionManager.stopThread();
     }
 }
