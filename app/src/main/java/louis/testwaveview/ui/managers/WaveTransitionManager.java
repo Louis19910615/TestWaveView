@@ -86,6 +86,13 @@ public class WaveTransitionManager {
         }
     }
 
+    public void offer0() {
+        transitionA((float) 0);
+        transitionSpeedOne(0);
+        transitionSpeedTwo(0);
+        transitionWaterDepth(60);
+    }
+
     public void offer1() {
         transitionA((float) 20);
         transitionSpeedOne(7);
@@ -106,7 +113,7 @@ public class WaveTransitionManager {
         transitionSpeedTwo(12);
         transitionWaterDepth(120);
     }
-
+    // TODO 优化渐变过程，通过差距和点数成正比优化，及等差一样
     private void transitionA(Float targetA) {
         if (mTargetA.equals(targetA)) {
             Log.d("WaveTransitionManager", "mTargetA equal.");
@@ -114,11 +121,11 @@ public class WaveTransitionManager {
         }
         mTargetA = targetA;
         mTransitionAQueue.clear();
-        Float tempA = mCurrentA;
-        Float err = (tempA - targetA) / 20;
-        for (int i = 0; i < 20; i++) {
+        double tempA = mCurrentA;
+        double err = (tempA - targetA) / 80.0;
+        for (int i = 0; i < 80; i++) {
             tempA -= err;
-            mTransitionAQueue.offer(tempA);
+            mTransitionAQueue.offer((float) tempA);
         }
         mTransitionAQueue.offer(targetA);
     }
@@ -131,8 +138,8 @@ public class WaveTransitionManager {
         mTargetSpeedOne = targetSpeedOne;
         mTransitionSpeedOneQueue.clear();
         double tempSpeedOne = mCurrentSpeedOne;
-        double err = (tempSpeedOne - targetSpeedOne) / 20.0;
-        for (int i = 0; i < 20; i++) {
+        double err = (tempSpeedOne - targetSpeedOne) / 80.0;
+        for (int i = 0; i < 80; i++) {
             tempSpeedOne -= err;
             mTransitionSpeedOneQueue.offer((int) Math.floor(tempSpeedOne));
         }
@@ -147,8 +154,8 @@ public class WaveTransitionManager {
         mTargetSpeedTwo = targetSpeedTwo;
         mTransitionSpeedTwoQueue.clear();
         double tempSpeedTwo = mCurrentSpeedTwo;
-        double err = (tempSpeedTwo - targetSpeedTwo) / 20;
-        for (int i = 0; i < 20; i++) {
+        double err = (tempSpeedTwo - targetSpeedTwo) / 80.0;
+        for (int i = 0; i < 80; i++) {
             tempSpeedTwo -= err;
             mTransitionSpeedTwoQueue.offer((int) Math.floor(tempSpeedTwo));
         }
@@ -164,8 +171,8 @@ public class WaveTransitionManager {
         mTargetWaterDepth = targetWaterDepth;
         mTransitionWaterDepth.clear();
         double tempWaterDepth = mCurrentWaterDepth;
-        double err = (tempWaterDepth - targetWaterDepth) / 40;
-        for (int i = 0; i < 40; i ++) {
+        double err = (tempWaterDepth - targetWaterDepth) / 80;
+        for (int i = 0; i < 80; i ++) {
             tempWaterDepth -= err;
             mTransitionWaterDepth.offer((int) Math.floor(tempWaterDepth));
         }

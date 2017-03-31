@@ -1,6 +1,7 @@
 package louis.testwaveview.ui;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DrawFilter;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
+import louis.testwaveview.R;
 import louis.testwaveview.utils.UiUtils;
 
 /**
@@ -64,26 +66,42 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
 
     private boolean isDrawing = false;// 控制绘制的开关
 
+//    private static final int[] mAttr = {
+//            R.styleable.SurfaceWaveView_fstWavePaintColor,
+//            R.styleable.SurfaceWaveView_secWavePaintColor,
+//            R.styleable.SurfaceWaveView_stretchFactorA,
+//            R.styleable.SurfaceWaveView_translateXSpeedOne,
+//            R.styleable.SurfaceWaveView_translateXSpeedTwo,
+//            R.styleable.SurfaceWaveView_waterDepth
+//    };
+//    private static final int ATTR_FST_WAVE_PAINT_COLOR = 0;
+//    private static final int ATTR_SEC_WAVE_PAINT_COLOR = 1;
+//    private static final int ATTR_STRETCH_FACTOR_A = 2;
+//    private static final int ATTR_TRANSLATE_X_SPEED_ONE = 3;
+//    private static final int ATTR_TRANSLATE_X_SPEED_TWO = 4;
+//    private static final int ATTR_WATER_DEPTH = 5;
+
     public SurfaceWaveView(Context context) {
         super(context);
         Log.d("SurfaceWaveView", "SurfaceWaveView1");
-        init(context);
+        init(context, null, 0);
     }
 
     public SurfaceWaveView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
         Log.d("SurfaceWaveView", "SurfaceWaveView2");
-        init(context);
+        init(context, attrs, 0);
     }
 
     public SurfaceWaveView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         Log.d("SurfaceWaveView", "SurfaceWaveView3");
-        init(context);
+        init(context, attrs, defStyleAttr);
     }
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        loadAttrs(attrs, defStyleAttr);
         mHolder = this.getHolder();
         mHolder.addCallback(this);
         mHolder.setFormat(PixelFormat.TRANSLUCENT);//支持透明度
@@ -110,6 +128,7 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
 
         renderThread = new RenderThread();
     }
+
 
     public void setIsAttributeChange(boolean isAttributeChange) {
         this.isAttributeChange = isAttributeChange;
@@ -263,10 +282,10 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
     private class RenderThread implements Runnable {
         @Override
         public void run() {
-            Log.d("SurfaceWaveView", "start");
+//            Log.d("SurfaceWaveView", "start");
             // 不停绘制界面，这里是异步绘制，不采用外部通知开启绘制的方式，水波根据数据更新才会开始增长
             while (isDrawing) {
-                Log.d("SurfaceWaveView", "run");
+//                Log.d("SurfaceWaveView", "run");
 
                 if (isAttributeChange) {
                     computeYPositions();
@@ -287,7 +306,7 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            Log.d("SurfaceWaveView", "finally");
+//            Log.d("SurfaceWaveView", "finally");
             if (canvas != null)
                 mHolder.unlockCanvasAndPost(canvas);//释放画布
         }
@@ -345,6 +364,28 @@ public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     private void loadAttrs(AttributeSet attrs, int defStyle) {
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.SurfaceWaveView);
 
+        fstWavePaintColor = typedArray.getColor(R.styleable.SurfaceWaveView_fstWavePaintColor, fstWavePaintColor);
+        secWavePaintColor = typedArray.getColor(R.styleable.SurfaceWaveView_secWavePaintColor, secWavePaintColor);
+        stretchFactorA = typedArray.getFloat(R.styleable.SurfaceWaveView_stretchFactorA, stretchFactorA);
+
+        translateXSpeedOne = typedArray.getInteger(R.styleable.SurfaceWaveView_translateXSpeedOne, translateXSpeedOne);
+        translateXSpeedTwo = typedArray.getInteger(R.styleable.SurfaceWaveView_translateXSpeedTwo, translateXSpeedTwo);
+        waterDepth = typedArray.getInteger(R.styleable.SurfaceWaveView_waterDepth, waterDepth);
+//        Log.e("SurfaceWaveView", "fstWavePaintColor = " + fstWavePaintColor +
+//                                 " , secWavePaintColor = " + secWavePaintColor +
+//                                 " , stretchFactorA = " + stretchFactorA +
+//                                 " , translateXSpeedOne = " + translateXSpeedOne +
+//                                 " , translateXSpeedTwo = " + translateXSpeedTwo +
+//                                 " , waterDepth = " + waterDepth);
+        typedArray.recycle();
+
+//        int count = attrs.getAttributeCount();
+//        for (int i = 0; i < count; i++) {
+//            String attrName = attrs.getAttributeName(i);
+//            String attrVal = attrs.getAttributeValue(i);
+//            Log.e("SurfaceWaveView", "attrName = " + attrName + " , attrVal = " + attrVal);
+//        }
     }
 }

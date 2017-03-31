@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wave="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@mipmap/bg_common_2">
 
+    <Button
+        android:id="@+id/ctrl_wave_btn0"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="ctrl_btn0"/>
     <Button
         android:id="@+id/ctrl_wave_btn1"
         android:layout_height="wrap_content"
@@ -24,6 +30,12 @@
     <louis.testwaveview.ui.SurfaceWaveView
         android:id="@+id/surface_wave_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        wave:fstWavePaintColor="#282AE2E2"
+        wave:secWavePaintColor="#3C2AE2E2"
+        wave:stretchFactorA="40"
+        wave:translateXSpeedOne="14"
+        wave:translateXSpeedTwo="10"
+        wave:waterDepth="100"/>
 
 </LinearLayout>

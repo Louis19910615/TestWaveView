@@ -13,6 +13,7 @@ import louis.testwaveview.utils.UiUtils;
 
 public class WaveDemoActivity extends Activity {
 
+    private Button mCtrlWaveBtn0;
     private Button mCtrlWaveBtn1;
     private Button mCtrlWaveBtn2;
     private Button mCtrlWaveBtn3;
@@ -25,6 +26,14 @@ public class WaveDemoActivity extends Activity {
         setContentView(R.layout.wave_demo_layout);
 
         mSurfaceWaveView = (SurfaceWaveView) findViewById(R.id.surface_wave_view);
+
+        mCtrlWaveBtn0 = (Button) findViewById(R.id.ctrl_wave_btn0);
+        mCtrlWaveBtn0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWaveTransitionManager.offer0();
+            }
+        });
 
         mCtrlWaveBtn1 = (Button) findViewById(R.id.ctrl_wave_btn1);
         mCtrlWaveBtn1.setOnClickListener(new View.OnClickListener() {
@@ -51,13 +60,13 @@ public class WaveDemoActivity extends Activity {
         });
 
         mWaveTransitionManager = new WaveTransitionManager(mSurfaceWaveView);
-        mWaveTransitionManager.startThread();
+//        mWaveTransitionManager.startThread();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d("WaveDemoActivity", "onDestroy");
-        mWaveTransitionManager.stopThread();
+//        mWaveTransitionManager.stopThread();
     }
 }
