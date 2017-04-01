@@ -31,7 +31,7 @@ public class WaveDemoActivity extends Activity {
         mCtrlWaveBtn0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mWaveTransitionManager.offer0();
+                mWaveTransitionManager.powerOff();
             }
         });
 
@@ -39,7 +39,7 @@ public class WaveDemoActivity extends Activity {
         mCtrlWaveBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mWaveTransitionManager.offer1();
+                mWaveTransitionManager.changeLevel(30);
             }
         });
 
@@ -47,7 +47,7 @@ public class WaveDemoActivity extends Activity {
         mCtrlWaveBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mWaveTransitionManager.offer2();
+                mWaveTransitionManager.changeLevel(60);
             }
         });
 
@@ -55,7 +55,7 @@ public class WaveDemoActivity extends Activity {
         mCtrlWaveBtn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mWaveTransitionManager.offer3();
+                mWaveTransitionManager.changeLevel(100);
             }
         });
 

@@ -17,17 +17,29 @@ public class WaveTransitionManager {
     private SurfaceWaveView mSurfaceWaveView;
     private boolean isListening = false;
 
+    private int minSpeedOne = 7;
+    private int maxSpeedOne = 14;
+
+    private int minSpeedTwo = 5;
+    private int maxSpeedTwo = 10;
+
+    private float minA = 0;
+    private float maxA = 40;
+
+    private int minWaterDepth = 50;
+    private int maxWaterDepth = 100;
+
     private ConcurrentLinkedQueue<Float> mTransitionAQueue;
-    private Float mCurrentA = (float)(20 * 2); //当前波纹幅度值
-    private Float mTargetA = (float)(20 * 2); //当前波纹设置目标值
+    private Float mCurrentA = (float)(20); //当前波纹幅度值
+    private Float mTargetA = (float)(20); //当前波纹设置目标值
 
     private ConcurrentLinkedQueue<Integer> mTransitionSpeedOneQueue;
-    private Integer mCurrentSpeedOne = 7 * 2; //当前快波纹速度
-    private Integer mTargetSpeedOne = 7 * 2;   //当前快波纹设置目标值
+    private Integer mCurrentSpeedOne = 10; //当前快波纹速度
+    private Integer mTargetSpeedOne = 10;   //当前快波纹设置目标值
 
     private ConcurrentLinkedQueue<Integer> mTransitionSpeedTwoQueue;
-    private Integer mCurrentSpeedTwo = 5 * 2; //当前慢波纹速度
-    private Integer mTargetSpeedTwo = 5 * 2;   //当前慢波纹设置目标值
+    private Integer mCurrentSpeedTwo = 7; //当前慢波纹速度
+    private Integer mTargetSpeedTwo = 7;   //当前慢波纹设置目标值
 
     private ConcurrentLinkedQueue<Integer> mTransitionWaterDepth;
     private Integer mCurrentWaterDepth = 100; //当前波纹水深
@@ -86,32 +98,17 @@ public class WaveTransitionManager {
         }
     }
 
-    public void offer0() {
-        transitionA((float) 0);
-        transitionSpeedOne(7);
-        transitionSpeedTwo(5);
-//        transitionWaterDepth(60);
+
+    public void powerOff() {
+        transitionA(minA);
+        transitionSpeedOne(minSpeedOne);
+        transitionSpeedTwo(minSpeedTwo);
     }
 
-    public void offer1() {
-        transitionA((float) 20);
-        transitionSpeedOne(7);
-        transitionSpeedTwo(5);
-//        transitionWaterDepth(80);
-    }
-
-    public void offer2() {
-        transitionA((float) (20 * 2));
-        transitionSpeedOne(7 * 2);
-        transitionSpeedTwo(5 * 2);
-//        transitionWaterDepth(100);
-    }
-
-    public void offer3() {
-        transitionA((float) (20 * 3));
-        transitionSpeedOne(15);
-        transitionSpeedTwo(12);
-//        transitionWaterDepth(120);
+    public void changeLevel(int level) {
+        transitionA((float) (maxA * level / 100.0));
+        transitionSpeedOne((int) (minSpeedOne + (maxSpeedOne - minSpeedOne) * level / 100.0));
+        transitionSpeedTwo((int) (minSpeedTwo + (maxSpeedTwo - minSpeedTwo) * level / 100.0));
     }
 
     private void transitionA(Float targetA) {

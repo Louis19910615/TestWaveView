@@ -26,24 +26,31 @@ import louis.testwaveview.utils.UiUtils;
 //TODO 支持View本身属性
 public class SurfaceWaveView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private static final int DEFAULT_FST_WAVE_PAINT_COLOR = 0x282AE2E2;
+    private static final int DEFAULT_SEC_WAVE_PAINT_COLOR = 0x3C2AE2E2;
+    private static final int DEFAULT_STRETCH_FACTOR_A = 40;
+    private static final int DEFAULT_TRANSLATE_X_SPEED_ONE = 14;
+    private static final int DEFAULT_TRANSLATE_X_SPEED_TWO = 10;
+    private static final int DEFAULT_WATER_DEPTH = 100;
+
     private SurfaceHolder mHolder;
     private RenderThread renderThread;//绘图线程
 
     private boolean isAttributeChange = false;
 
     // 波纹颜色
-    private int fstWavePaintColor = 0x282AE2E2;
-    private int secWavePaintColor = 0x3C2AE2E2;
+    private int fstWavePaintColor = DEFAULT_FST_WAVE_PAINT_COLOR;
+    private int secWavePaintColor = DEFAULT_SEC_WAVE_PAINT_COLOR;
     // y = Asin(wx+b)+h
-    private float stretchFactorA = 20 * 2; //幅度
+    private float stretchFactorA = DEFAULT_STRETCH_FACTOR_A; //幅度
     private static final int OFFSET_Y = 0;
     // 第一条水波移动速度
-    private int translateXSpeedOne = 7 * 2;
+    private int translateXSpeedOne = DEFAULT_TRANSLATE_X_SPEED_ONE;
     // 第二条水波移动速度
-    private int translateXSpeedTwo = 5 * 2;
+    private int translateXSpeedTwo = DEFAULT_TRANSLATE_X_SPEED_TWO;
 
     // 水波深度 dp
-    private int waterDepth = 100;
+    private int waterDepth = DEFAULT_WATER_DEPTH;
 
     // 水波深度 px
     private int mWaterDepth;

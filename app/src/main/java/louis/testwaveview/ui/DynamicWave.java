@@ -9,7 +9,6 @@ import android.graphics.DrawFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -39,8 +38,6 @@ public class DynamicWave extends View {
     private Paint mWavePaint;
     private DrawFilter mDrawFilter;
 
-    private Path mPathFst;
-    private Path mPathSec;
 
     public DynamicWave(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,8 +55,6 @@ public class DynamicWave extends View {
         mWavePaint.setColor(WAVE_PAINT_COLOR);
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
-        mPathFst = new Path();
-        mPathSec = new Path();
     }
 
     @Override
@@ -69,32 +64,19 @@ public class DynamicWave extends View {
         canvas.setDrawFilter(mDrawFilter);
         resetPositonY();
 
-        mPathFst.reset();
-        mPathSec.reset();
-        mPathFst.moveTo(0, mTotalHeight);
-        mPathSec.moveTo(0, mTotalHeight);
         for (int i = 0; i < mTotalWidth; i++) {
             // 减400只是为了控制波纹绘制的y的在屏幕的位置，大家可以改成一个变量，然后动态改变这个变量，从而形成波纹上升下降效果
             // 绘制第一条水波纹
-            mPathFst.lineTo(i, mTotalHeight - mResetOneYPositions[i] - 400);
-//            canvas.drawPoint(i, mTotalHeight - mResetOneYPositions[i] - 400, mWavePaint);
-//            canvas.drawLine(i, mTotalHeight - mResetOneYPositions[i] - 400, i,
-//                    mTotalHeight,
-//                    mWavePaint);
+            canvas.drawLine(i, mTotalHeight - mResetOneYPositions[i] - 400, i,
+                    mTotalHeight,
+                    mWavePaint);
             // 绘制第二条水波纹
-            mPathSec.lineTo(i, mTotalHeight - mResetTwoYPositions[i] - 400);
-//            canvas.drawPoint(i, mTotalHeight - mResetTwoYPositions[i] - 400, mWavePaint);
-//            canvas.drawLine(i, mTotalHeight - mResetTwoYPositions[i] - 400, i,
-//                    mTotalHeight,
-//                    mWavePaint);
+
+            canvas.drawLine(i, mTotalHeight - mResetTwoYPositions[i] - 400, i,
+                    mTotalHeight,
+                    mWavePaint);
 
         }
-        mPathFst.lineTo(mTotalWidth, mTotalHeight);
-        mPathSec.lineTo(mTotalWidth, mTotalHeight);
-        mPathFst.close();
-        mPathSec.close();
-        canvas.drawPath(mPathFst, mWavePaint);
-        canvas.drawPath(mPathSec, mWavePaint);
 
         // 改变两条波纹的移动点
         mXOneOffset += mXOffsetSpeedOne;
@@ -109,8 +91,7 @@ public class DynamicWave extends View {
         }
 
         // 引发view重绘，一般可以考虑延迟20-30ms重绘，空出时间片
-        postInvalidateDelayed(10);
-//        postInvalidate();
+        postInvalidate();
     }
 
     private void resetPositonY() {

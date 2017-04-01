@@ -35,8 +35,7 @@ public class MainActivity extends Activity implements OnClickListener {
             Intent intent = new Intent(this, WaveDemoActivity.class);
             startActivity(intent);
         } else if (v == mXfermode) {
-            Intent intent = new Intent(this, PorterDuffXfermodeActivity.class);
-            startActivity(intent);
+
         }
     }
 
